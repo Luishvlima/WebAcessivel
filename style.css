@@ -1,4 +1,4 @@
-/* Web_Acessibilidade: campus wayfinding, field photography and readable research - Gotham Edition */
+/* Geo-acessível: campus wayfinding, field photography and readable research - Gotham Edition */
 @font-face {
     font-family: 'Gotham';
     src: local('Gotham'), local('Gotham-Book'), local('Gotham Book');
@@ -651,7 +651,7 @@ svg { display: block; flex-shrink: 0; }
     grid-template-columns: 200px 1fr;
     background: var(--fundo-card);
     border: 1px solid var(--borda);
-    border-radius: 14px;
+    border-radius: 6px;
     overflow: hidden;
     box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
     transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s;

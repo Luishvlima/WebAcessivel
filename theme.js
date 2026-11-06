@@ -1,8 +1,6 @@
 // Apply the theme before the stylesheet loads, independently of the map.
 (() => {
-    // Chave do localStorage atualizada para o projeto WebAcessibilidade
-    const chave = "webacessibilidade-tema";
-    const chaveAntiga = "geo-acessivel-tema";
+    const chave = "geo-acessivel-tema";
     const raiz = document.documentElement;
     const preferenciaSistema = window.matchMedia("(prefers-color-scheme: dark)");
     let escolha = null;
@@ -12,7 +10,7 @@
     }
 
     try {
-        const salvo = window.localStorage.getItem(chave) || window.localStorage.getItem(chaveAntiga);
+        const salvo = window.localStorage.getItem(chave);
         if (temaValido(salvo)) escolha = salvo;
     } catch {
         // The toggle still works when browser storage is unavailable.
@@ -56,7 +54,7 @@
         if (!escolha) aplicarTema();
     });
     window.addEventListener("storage", evento => {
-        if (evento.key !== chave && evento.key !== chaveAntiga && evento.key !== null) return;
+        if (evento.key !== chave && evento.key !== null) return;
         escolha = temaValido(evento.newValue) ? evento.newValue : null;
         aplicarTema();
     });

@@ -1,16 +1,23 @@
 // ============================================================
-// WebAcessibilidade | ESTÁCIO NITERÓI
+// GEO-ACESSÍVEL | ESTÁCIO NITERÓI
 // Projeto: Geometria Analítica & Álgebra Linear na Mobilidade
 // Ciência da Computação
 // ============================================================
 
-// 1. INICIALIZAÇÃO DO MAPA LEAFLET
+// 1. INICIALIZAÇÃO DO MAPA LEAFLET COM ZOOM TRAVADO
 const COORD_CAMPUS_ESTACIO = [-22.89515, -43.11995];
+const ZOOM_PADRAO = 19;
 const mapa = L.map("mapa", {
     center: COORD_CAMPUS_ESTACIO,
-    zoom: 19,
-    minZoom: 16,
-    maxZoom: 20
+    zoom: ZOOM_PADRAO,
+    minZoom: ZOOM_PADRAO,
+    maxZoom: ZOOM_PADRAO,
+    zoomControl: false,
+    scrollWheelZoom: false,
+    doubleClickZoom: false,
+    touchZoom: false,
+    boxZoom: false,
+    keyboard: false
 });
 
 // 2. CAMADAS DE MAPA PÚBLICAS E ABERTAS (SEM API KEY E SEM BLOQUEIO 403)
@@ -398,18 +405,13 @@ function configurarRotulosEntradas() {
 }
 
 function ajustarMapaAcessos(camada = null) {
-    const compacto = mapa.getSize().x < 600;
     const limites = camada && camada.getBounds && camada.getBounds().isValid()
         ? camada.getBounds()
         : linhaPercursoEscadaria.getBounds().extend(linhaPercursoRampa.getBounds());
     if (limites && limites.isValid && limites.isValid()) {
-        mapa.fitBounds(limites, {
-            padding: compacto ? [36, 36] : [75, 55],
-            maxZoom: compacto ? 18 : 19,
-            animate: false
-        });
+        mapa.panTo(limites.getCenter(), { animate: false });
     } else {
-        mapa.setView(COORD_CAMPUS_ESTACIO, 19);
+        mapa.setView(COORD_CAMPUS_ESTACIO, ZOOM_PADRAO);
     }
 }
 
