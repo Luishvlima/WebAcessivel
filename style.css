@@ -179,7 +179,7 @@ svg { display: block; flex-shrink: 0; }
 .percurso-estatistica span { font-size: 13px; color: var(--texto-mutado); }
 .percurso-escala { height: 5px; margin-top: 16px; background: var(--fundo-card-alt); border-radius: 2px; }
 .percurso-escala::before { content: ""; display: block; height: 100%; border-radius: inherit; }
-.painel-percurso-escadaria .percurso-escala::before { width: 45.4%; background: var(--cor-perigo); }
+.painel-percurso-escadaria .percurso-escala::before { width: 25%; background: var(--cor-perigo); }
 .painel-percurso-rampa .percurso-escala::before { width: 100%; background: var(--cor-acento); }
 .nota-comparativo { margin-top: 20px; font-size: 13px; color: var(--texto-mutado); }
 

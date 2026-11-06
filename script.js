@@ -66,7 +66,7 @@ const pontos = [
         categoria: "acesso",
         descricao: "Ponto inicial na calçada da Rua Eduardo Luiz Gomes, alinhado à passagem de pedestres.",
         acessibilidade: "Acesso direto pela calçada com descida ao pátio e conexão ao pórtico.",
-        foto: "img/corredor_terreo_entrada.jpg"
+        foto: "img/escadaria_externa_obstaculo.jpg"
     },
     {
         id: 2,
@@ -343,10 +343,6 @@ function criarPopupPonto(ponto) {
                 <strong>Acessibilidade:</strong> ${escaparHTML(ponto.acessibilidade)}
             </div>
             <p class="popup-coordenadas">${formatarCoordenada(ponto.latitude)}, ${formatarCoordenada(ponto.longitude)}</p>
-            <div class="popup-acoes">
-                <button type="button" class="selecionar-cadastrado" data-id="${ponto.id}" data-papel="A">Usar como origem</button>
-                <button type="button" class="selecionar-cadastrado" data-id="${ponto.id}" data-papel="B">Usar como destino</button>
-            </div>
         </div>
     `;
 }
@@ -512,15 +508,7 @@ function solicitarConfirmacaoPonto(papel, ponto, latlng) {
         .openOn(mapa);
 }
 
-mapa.on("click", function(e) {
-    const papel = !pontoA ? "A" : (!pontoB ? "B" : "A");
-    const novoPonto = {
-        nome: "Local selecionado no mapa",
-        latitude: e.latlng.lat,
-        longitude: e.latlng.lng
-    };
-    solicitarConfirmacaoPonto(papel, novoPonto, e.latlng);
-});
+
 
 // 12. EXECUÇÃO DOS CÁLCULOS DE GEOMETRIA ANALÍTICA
 function executarCalculoGeometrico() {
@@ -883,50 +871,6 @@ function configurarIndice() {
     atualizar();
 }
 
-// 18. EVENT LISTENERS
-document.addEventListener("click", function(e) {
-    const el = e.target;
-
-    const btnCadastrado = el.closest(".selecionar-cadastrado");
-    if (btnCadastrado) {
-        e.preventDefault();
-        const id = Number(btnCadastrado.dataset.id);
-        const papel = btnCadastrado.dataset.papel;
-        const ponto = pontos.find(p => p.id === id);
-        if (ponto) {
-            mapa.closePopup();
-            definirPontoSelecao(papel, ponto);
-        }
-        return;
-    }
-
-    const btnConfirmar = el.closest(".confirmar-selecao");
-    if (btnConfirmar) {
-        e.preventDefault();
-        if (selecaoPendente) {
-            definirPontoSelecao(selecaoPendente.papel, selecaoPendente.ponto);
-            selecaoPendente = null;
-            mapa.closePopup();
-        }
-        return;
-    }
-
-    const btnCancelar = el.closest(".cancelar-selecao");
-    if (btnCancelar) {
-        e.preventDefault();
-        selecaoPendente = null;
-        mapa.closePopup();
-        return;
-    }
-
-    if (el.closest("#novoCalculo")) {
-        e.preventDefault();
-        limparSelecaoCompleta();
-        campoOrigem?.focus();
-        return;
-    }
-});
-
 if (btnRotaAcessivel) btnRotaAcessivel.addEventListener("click", exibirRotaAcessivel);
 if (btnRotaEscada) btnRotaEscada.addEventListener("click", exibirRotaEscadaria);
 if (btnLimparRotas) btnLimparRotas.addEventListener("click", () => {
@@ -934,7 +878,7 @@ if (btnLimparRotas) btnLimparRotas.addEventListener("click", () => {
     limparSelecaoCompleta();
     ajustarMapaAcessos();
     const status = document.getElementById("statusMapa");
-    if (status) status.textContent = "Traçados em destaque e seleção de pontos limpos.";
+    if (status) status.textContent = "Traçados em destaque limpos.";
 });
 
 if (botaoBuscarRota) {

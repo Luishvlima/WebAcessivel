@@ -22,7 +22,7 @@
     <link rel="preconnect" href="https://unpkg.com">
 
     <!-- Folha de Estilos Exclusiva -->
-    <link rel="stylesheet" href="style.css?v=2eb81637">
+    <link rel="stylesheet" href="style.css?v=3fc91825">
 
     <!-- Leaflet 1.9.4 CSS -->
     <link
@@ -133,7 +133,7 @@
                             alt="Acesso principal pela Rua Eduardo Luiz Gomes"
                             loading="lazy"
                         >
-                        <span class="badge-percurso badge-escadaria" style="background:#d97706;border-color:#b45309;">Trajeto 01 / Amarelo</span>
+                        <span class="badge-percurso badge-escadaria" style="background:#e7b416;border-color:#b45309;">Trajeto 01 / Amarelo</span>
                     </button>
 
                     <div class="percurso-corpo">
@@ -189,14 +189,13 @@
             </div>
 
             <p class="descricao-bloco">
-                Visualize os marcos espaciais no mapa, confira os dois trajetos reais desenhados sobre as vias
-                e clique em qualquer ponto do campus para inspecionar fotografias locais e acionar os cálculos analíticos.
+                Visualize os marcos espaciais no mapa e confira os dois trajetos reais traçados sobre as vias públicas e dependências do campus.
             </p>
 
             <!-- Barra de Ações Rápidas do Mapa -->
             <div class="barra-ferramentas-mapa">
                 <button type="button" id="btnRotaAcessivel" aria-pressed="false" class="btn-ferramenta">
-                    <span class="amostra-rota amostra-rampa" style="background:#d97706;" aria-hidden="true"></span> Trajeto Amarelo (54,96 m)
+                    <span class="amostra-rota amostra-rampa" style="background:#e7b416;" aria-hidden="true"></span> Trajeto Amarelo (54,96 m)
                 </button>
                 <button type="button" id="btnRotaEscada" aria-pressed="false" class="btn-ferramenta">
                     <span class="amostra-rota amostra-escada" style="background:#2563eb;" aria-hidden="true"></span> Trajeto Azul (100,56 m)
@@ -206,7 +205,7 @@
                 </button>
             </div>
 
-            <p id="statusMapa" class="status-mapa" aria-live="polite">Escolha um trajeto ou selecione um ponto para conhecer os acessos.</p>
+            <p id="statusMapa" class="status-mapa" aria-live="polite">Escolha um trajeto para visualizar os acessos no campus.</p>
 
             <!-- Container do Mapa Leaflet -->
             <div
@@ -217,24 +216,12 @@
 
             <div class="legenda-painel-mapa">
                 <div class="item-legenda">
-                    <span class="indicador-cor" style="background:#d97706;"></span>
+                    <span class="indicador-cor" style="background:#e7b416;"></span>
                     <span>Trajeto 01 (Amarelo — 54,96 m)</span>
                 </div>
                 <div class="item-legenda">
                     <span class="indicador-cor" style="background:#2563eb;"></span>
                     <span>Trajeto 02 (Azul — 100,56 m)</span>
-                </div>
-                <div class="item-legenda">
-                    <span class="indicador-cor" style="background:#254f6b;"></span>
-                    <span>Ponto A Selecionado</span>
-                </div>
-                <div class="item-legenda">
-                    <span class="indicador-cor" style="background:#946819;"></span>
-                    <span>Ponto B Selecionado</span>
-                </div>
-                <div class="item-legenda">
-                    <span class="indicador-cor" style="background:#287783;"></span>
-                    <span>Vetor Analítico de Deslocamento</span>
                 </div>
             </div>
         </section>
@@ -959,7 +946,7 @@
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
         crossorigin=""
     ></script>
-    <script src="script.js?v=9a973f1dbc1f"></script>
+    <script src="script.js?v=9c0915d3"></script>
 
 </body>
 </html>
