@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>GEO-ACESSÍVEL | Mapeamento Digital e Geometria Analítica na Estácio Niterói</title>
+
+    <meta
+        name="description"
+        content="Sistema de mapeamento digital, análise vetorial e matrizes de acessibilidade para mobilidade urbana no campus Estácio Niterói. Projeto de Ciência da Computação."
+    >
+
+    <meta name="theme-color" content="#ffffff">
+    <script src="theme.js?v=3d9a64a2be32"></script>
+
+    <!-- Tipografia inspirada em sinalização e publicações de campo -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=Source+Sans+3:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://unpkg.com">
+
+    <!-- Folha de Estilos Exclusiva -->
+    <link rel="stylesheet" href="style.css?v=0cb862692ffe">
+
+    <!-- Leaflet 1.9.4 CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+        crossorigin=""
+    >
+</head>
+
+<body>
+    <a class="pular-conteudo" href="#conteudo">Pular para o conteúdo</a>
+
+    <!-- CABEÇALHO / HEADER EXCLUSIVO -->
+    <header class="topo-plataforma" id="inicio">
+        <div class="container-header">
+            <a href="#inicio" class="marca-projeto" aria-label="GEO-ACESSÍVEL - Início">
+                <span class="simbolo-marca" aria-hidden="true">
+                    <svg viewBox="0 0 40 40" fill="none"><path d="M10 29V15a5 5 0 0 1 10 0v10a5 5 0 0 0 10 0V11" stroke="currentColor" stroke-width="2.5"/><circle cx="10" cy="30" r="3" fill="currentColor"/><circle cx="30" cy="10" r="3" fill="currentColor"/></svg>
+                </span>
+                <div class="texto-marca">
+                    <strong translate="no">Geo-acessível</strong>
+                    <span>Ciência da Computação / Estácio Niterói</span>
+                </div>
+            </a>
+
+            <div class="acoes-cabecalho">
+                <div class="badge-departamento">
+                    <span>Projeto de campo</span>
+                    Geometria Analítica e Álgebra Linear
+                </div>
+                <button type="button" id="alternarTema" class="alternar-tema" aria-label="Modo escuro" aria-pressed="false" title="Modo escuro">
+                    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.5 13.2A8.5 8.5 0 0 1 10.8 3.5a8.5 8.5 0 1 0 9.7 9.7Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                    <span>Modo escuro</span>
+                </button>
+            </div>
+        </div>
+
+        <div class="conteudo-hero">
+            <div class="hero-texto">
+                <p class="hero-local">Estácio Niterói, RJ</p>
+
+                <h1>
+                    Do portão<br>à sala de aula.
+                </h1>
+
+                <p>
+                    Um estudo sobre os caminhos de quem chega ao campus.
+                    Mapeamos os acessos, medimos os percursos e registramos
+                    as barreiras encontradas pelo caminho.
+                </p>
+
+                <div class="hero-acoes">
+                    <a href="#secao-mapa" class="btn-acao-primario">
+                        Explorar o mapa
+                        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M10 3v13m-5-5 5 5 5-5" stroke="currentColor" stroke-width="1.5"/></svg>
+                    </a>
+                    <a href="#galeria-campo" class="btn-acao-secundario">
+                        Ver registros de campo
+                    </a>
+                </div>
+            </div>
+
+            <figure class="hero-registro">
+                <img src="img/patio_central_marquise.jpg" width="1200" height="1600"
+                    alt="Caminho demarcado em amarelo atravessa o pátio coberto da Estácio Niterói"
+                    fetchpriority="high">
+                <figcaption>
+                    <span><strong>O campus, visto de perto.</strong> Pátio central e circulação térrea.</span>
+                    <a href="#galeria-campo">Acervo do projeto</a>
+                </figcaption>
+            </figure>
+        </div>
+    </header>
+
+    <!-- BARRA DE NAVEGAÇÃO FIXA -->
+    <nav class="barra-navegacao" aria-label="Navegação da plataforma">
+        <div class="container-nav">
+            <div class="links-nav">
+                <a href="#comparativo-trajetos">Trajetos</a>
+                <a href="#secao-mapa">Mapa do campus</a>
+                <a href="#modelagem-matematica">Vetores & Matrizes</a>
+                <a href="#galeria-campo">Registros de campo</a>
+                <a href="#barreiras-solucoes">Barreiras e soluções</a>
+                <a href="#fundamentacao">Fundamentação</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="conteudo-principal" id="conteudo" tabindex="-1">
+
+        <!-- BLOCO 1: COMPARATIVO DOS TRAJETOS DE ENTRADA -->
+        <section id="comparativo-trajetos" class="bloco-secao">
+            <div class="cabecalho-bloco">
+                <div class="titulo-secao">
+                    <h2>Um destino. Dois caminhos de entrada.</h2>
+                </div>
+            </div>
+
+            <p class="descricao-bloco">
+                O Trajeto Amarelo segue pela passagem de pedestres até a entrada do prédio. O Trajeto Azul
+                contorna externamente pelas vias públicas. As distâncias abaixo foram calculadas pela integração geodésica dos pontos.
+            </p>
+
+            <div class="grade-percursos">
+                <!-- Trajeto 01: Amarelo -->
+                <article class="painel-percurso painel-percurso-escadaria">
+                    <button type="button" class="percurso-foto abrir-foto" aria-label="Ampliar foto: Acesso principal pela Rua Eduardo Luiz Gomes" aria-haspopup="dialog">
+                        <img width="1600" height="1204"
+                            src="img/escadaria_externa_obstaculo.jpg"
+                            alt="Acesso principal pela Rua Eduardo Luiz Gomes"
+                            loading="lazy"
+                        >
+                        <span class="badge-percurso badge-escadaria" style="background:#d97706;border-color:#b45309;">Trajeto 01 / Amarelo</span>
+                    </button>
+
+                    <div class="percurso-corpo">
+                        <h3>Trajeto Amarelo (Acesso Principal)</h3>
+                        <p>
+                            Percurso direto pela calçada da Rua Eduardo Luiz Gomes, descendo pelo corredor de pedestres,
+                            atravessando o pátio pavimentado e alcançando o pórtico de entrada da Estácio - Campus Niterói I.
+                        </p>
+
+                        <div class="percurso-estatistica">
+                            <strong>54,96 m</strong>
+                            <span>extensão total recalculada da rota</span>
+                        </div>
+                    </div>
+                    <div class="percurso-escala" aria-hidden="true"></div>
+                </article>
+
+                <!-- Trajeto 02: Azul -->
+                <article class="painel-percurso painel-percurso-rampa">
+                    <button type="button" class="percurso-foto abrir-foto" aria-label="Ampliar foto: Contorno pela Rua Alberto de Andrade e Travessa Henrique Kopke" aria-haspopup="dialog">
+                        <img width="1600" height="1204"
+                            src="img/bifurcacao_rampa_veiculos.jpg"
+                            alt="Contorno pela Rua Alberto de Andrade e Travessa Henrique Kopke"
+                            loading="lazy"
+                        >
+                        <span class="badge-percurso badge-rampa" style="background:#2563eb;border-color:#1d4ed8;">Trajeto 02 / Azul</span>
+                    </button>
+
+                    <div class="percurso-corpo">
+                        <h3>Trajeto Azul (Contorno Externo)</h3>
+                        <p>
+                            Trajeto contornando pelas vias públicas a partir da Rua Alberto de Andrade e Travessa Henrique Kopke,
+                            subindo pela rampa/via de serviço até o acesso lateral e aos fundos do campus.
+                        </p>
+
+                        <div class="percurso-estatistica">
+                            <strong>100,56 m</strong>
+                            <span>extensão total recalculada da rota</span>
+                        </div>
+                    </div>
+                    <div class="percurso-escala" aria-hidden="true"></div>
+                </article>
+            </div>
+            <p class="nota-comparativo">As barras comparam as distâncias calculadas. O contorno pelo Trajeto Azul tem 45,60 m a mais do que o Trajeto Amarelo (100,56 m vs 54,96 m).</p>
+        </section>
+
+        <!-- BLOCO 2: GEOPORTAL E MAPA LEAFLET -->
+        <section id="secao-mapa" class="bloco-secao">
+            <div class="cabecalho-bloco">
+                <div class="titulo-secao">
+                    <h2>Encontre os acessos no mapa.</h2>
+                </div>
+            </div>
+
+            <p class="descricao-bloco">
+                Visualize os marcos espaciais no mapa, confira os dois trajetos reais desenhados sobre as vias
+                e clique em qualquer ponto do campus para inspecionar fotografias locais e acionar os cálculos analíticos.
+            </p>
+
+            <!-- Barra de Ações Rápidas do Mapa -->
+            <div class="barra-ferramentas-mapa">
+                <button type="button" id="btnRotaAcessivel" aria-pressed="false" class="btn-ferramenta">
+                    <span class="amostra-rota amostra-rampa" style="background:#d97706;" aria-hidden="true"></span> Trajeto Amarelo (54,96 m)
+                </button>
+                <button type="button" id="btnRotaEscada" aria-pressed="false" class="btn-ferramenta">
+                    <span class="amostra-rota amostra-escada" style="background:#2563eb;" aria-hidden="true"></span> Trajeto Azul (100,56 m)
+                </button>
+                <button type="button" id="btnLimparRotas" class="btn-ferramenta">
+                    Limpar traçados
+                </button>
+            </div>
+
+            <p id="statusMapa" class="status-mapa" aria-live="polite">Escolha um trajeto ou selecione um ponto para conhecer os acessos.</p>
+
+            <!-- Container do Mapa Leaflet -->
+            <div
+                id="mapa"
+                role="application"
+                aria-label="Mapa interativo dos acessos da Estácio Niterói"
+            ></div>
+
+            <div class="legenda-painel-mapa">
+                <div class="item-legenda">
+                    <span class="indicador-cor" style="background:#d97706;"></span>
+                    <span>Trajeto 01 (Amarelo — 54,96 m)</span>
+                </div>
+                <div class="item-legenda">
+                    <span class="indicador-cor" style="background:#2563eb;"></span>
+                    <span>Trajeto 02 (Azul — 100,56 m)</span>
+                </div>
+                <div class="item-legenda">
+                    <span class="indicador-cor" style="background:#254f6b;"></span>
+                    <span>Ponto A Selecionado</span>
+                </div>
+                <div class="item-legenda">
+                    <span class="indicador-cor" style="background:#946819;"></span>
+                    <span>Ponto B Selecionado</span>
+                </div>
+                <div class="item-legenda">
+                    <span class="indicador-cor" style="background:#287783;"></span>
+                    <span>Vetor Analítico de Deslocamento</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOCO 4: MODELAGEM MATEMÁTICA COMPACTA (VETORES & MATRIZES) -->
+        <section id="modelagem-matematica" class="bloco-secao">
+            <div class="cabecalho-bloco">
+                <div class="titulo-secao">
+                    <h2>Modelagem matemática: vetores e matrizes.</h2>
+                </div>
+            </div>
+
+            <p class="descricao-bloco">
+                Aplicação direta dos conteúdos de Geometria Analítica (decomposição vetorial e retas) e Álgebra Linear (grafos matriciais de acessibilidade).
+            </p>
+
+            <div class="grade-modelagem-compacta">
+                <!-- Card 1: Geometria Analítica (Vetores e Retas) - Ocupa espaço inteiro -->
+                <article class="card-intervencao card-vetor-full" style="margin:0;">
+                    <span class="tipo-intervencao">Geometria Analítica</span>
+                    <h3>Vetores e Equações das Retas</h3>
+                    <div style="font-size:14px;line-height:1.6;margin-top:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;">
+                        <p style="margin-bottom:0;">
+                            <strong style="color:#d97706;">Trajeto 01 (Amarelo):</strong><br>
+                            • Vetor: <var>v⃗</var> = 23,20 î - 23,08 ĵ (m)<br>
+                            • Módulo euclidiano direto: <strong>32,72 m</strong> (Extensão real: <strong>54,96 m</strong>)<br>
+                            • Equação da reta: <code>y = -0,99x - 0,5</code> | Direção: <strong>315,1°</strong>
+                        </p>
+                        <p style="margin-bottom:0;">
+                            <strong style="color:#2563eb;">Trajeto 02 (Azul):</strong><br>
+                            • Vetor: <var>v⃗</var> = -48,90 î - 21,44 ĵ (m)<br>
+                            • Módulo euclidiano direto: <strong>53,38 m</strong> (Extensão real: <strong>100,56 m</strong>)<br>
+                            • Equação da reta: <code>y = 0,44x - 14,3</code> | Direção: <strong>203,7°</strong>
+                        </p>
+                    </div>
+                </article>
+
+                <!-- Card 2: Álgebra Linear (Matriz de Adjacência A) -->
+                <article class="card-intervencao card-modelagem-flex" style="margin:0;">
+                    <div class="corpo-card-modelagem">
+                        <span class="tipo-intervencao">Álgebra Linear</span>
+                        <h3>Matriz de Adjacência A (Grafo)</h3>
+                        <div class="descricao-matriz-texto">
+                            <p style="margin-bottom:10px;">
+                                Modelagem das vias pedonais como um <strong>Grafo Não-Direcionado G = (V, E)</strong> com 4 vértices fundamentais: <em>P1 (Início Amarelo)</em>, <em>P2 (Pórtico Campus)</em>, <em>P3 (Início Azul)</em> e <em>P4 (Rampa Lateral)</em>.
+                            </p>
+                            <p style="margin-bottom:10px;">
+                                • <strong>Formulação:</strong> A<sub>ij</sub> = 1 para arestas transitáveis diretas; A<sub>ij</sub> = 0 para ausência de conexão.<br>
+                                • <strong>Propriedades:</strong> Matriz simétrica binária de ordem 4 (A = A<sup>T</sup>) com traço nulo tr(A) = 0 (sem auto-laços).
+                            </p>
+                        </div>
+                    </div>
+
+                    <details class="detalhes-matriz">
+                        <summary class="btn-visualizar-matriz">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                            <span>Visualizar matriz</span>
+                            <svg class="icone-seta" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="container-tabela-matriz-moderna">
+                            <div class="cabecalho-tabela-matriz">
+                                <div class="tag-ordem-matriz">
+                                    <span class="ponto-status"></span>
+                                    <span>Matriz A ∈ {0, 1}<sup>4×4</sup></span>
+                                </div>
+                                <span class="tipo-grafo-tag">Grafo Simétrico</span>
+                            </div>
+                            <table class="tabela-matriz-moderna">
+                                <thead>
+                                    <tr>
+                                        <th class="th-origem-destino" title="Origem \ Destino">Origem \ Dest</th>
+                                        <th><span class="chip-vertice">P1</span></th>
+                                        <th><span class="chip-vertice">P2</span></th>
+                                        <th><span class="chip-vertice">P3</span></th>
+                                        <th><span class="chip-vertice">P4</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P1</span></th>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                        <td><span class="val-matriz val-ativo">1</span></td>
+                                        <td><span class="val-matriz val-nulo">0</span></td>
+                                        <td><span class="val-matriz val-nulo">0</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P2</span></th>
+                                        <td><span class="val-matriz val-ativo">1</span></td>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                        <td><span class="val-matriz val-nulo">0</span></td>
+                                        <td><span class="val-matriz val-ativo">1</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P3</span></th>
+                                        <td><span class="val-matriz val-nulo">0</span></td>
+                                        <td><span class="val-matriz val-nulo">0</span></td>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                        <td><span class="val-matriz val-ativo">1</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P4</span></th>
+                                        <td><span class="val-matriz val-nulo">0</span></td>
+                                        <td><span class="val-matriz val-ativo">1</span></td>
+                                        <td><span class="val-matriz val-ativo">1</span></td>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="rodape-tabela-matriz">
+                                <div class="legenda-vertices">
+                                    <span><span class="tag-vertice">P1</span> Início Amarelo</span>
+                                    <span><span class="tag-vertice">P2</span> Pórtico Entrada</span>
+                                    <span><span class="tag-vertice">P3</span> Início Azul</span>
+                                    <span><span class="tag-vertice">P4</span> Rampa Lateral</span>
+                                </div>
+                            </div>
+                            <div class="explicacao-tabela-matriz">
+                                <h4>Como interpretar a Matriz de Adjacência:</h4>
+                                <ul>
+                                    <li><strong>Origem e Destino:</strong> As linhas representam os pontos de partida e as colunas os pontos de chegada da malha pedonal do campus.</li>
+                                    <li><strong>Valor 1 (Conexão Ativa):</strong> Indica que existe trânsito físico direto e contínuo entre os dois nós sem interseções intermediárias (ex.: P1 ↔ P2 e P2 ↔ P4).</li>
+                                    <li><strong>Valor 0 (Ausência de Conexão):</strong> Significa que não há passagem direta entre os pontos (ex.: de P1 para P3 é necessário contornar o quarteirão).</li>
+                                    <li><strong>Diagonal Principal Nula (0):</strong> Como o grafo modelado é simples (sem laços), a distância de um ponto para si mesmo não configura aresta.</li>
+                                    <li><strong>Simetria Bilateral (A = A<sup>T</sup>):</strong> Como pedestres transitam em ambos os sentidos, a matriz é perfeitamente espelhada em relação à diagonal.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </details>
+                </article>
+
+                <!-- Card 3: Álgebra Linear (Matriz de Custos Ponderada W) -->
+                <article class="card-intervencao card-modelagem-flex" style="margin:0;">
+                    <div class="corpo-card-modelagem">
+                        <span class="tipo-intervencao">Álgebra Linear & Otimização de Rotas</span>
+                        <h3>Matriz de Custos W (Pesos em Metros e Acessibilidade)</h3>
+                        <div class="descricao-matriz-texto">
+                            <p style="margin-bottom:10px;">
+                                Ponderação métrica das arestas com distâncias aferidas por geolocalização e NBR 9050, servindo de matriz de custos para algoritmos de caminho mínimo (Dijkstra / Floyd-Warshall).
+                            </p>
+                            <p style="margin-bottom:10px;">
+                                • <strong>Definição:</strong> W<sub>ij</sub> = extensão em metros do trecho; W<sub>ii</sub> = 0; W<sub>ij</sub> = ∞ para vértices sem aresta direta.<br>
+                                • <strong>Comparativo:</strong> Trajeto 01 (P1 → P2: 55 m com degraus) vs Trajeto 02 (P3 → P4 → P2: 116 m com rampa nivelada).
+                            </p>
+                        </div>
+                    </div>
+
+                    <details class="detalhes-matriz">
+                        <summary class="btn-visualizar-matriz">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="3" y1="15" x2="21" y2="15"></line><line x1="9" y1="3" x2="9" y2="21"></line><line x1="15" y1="3" x2="15" y2="21"></line></svg>
+                            <span>Visualizar matriz</span>
+                            <svg class="icone-seta" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </summary>
+                        <div class="container-tabela-matriz-moderna">
+                            <div class="cabecalho-tabela-matriz">
+                                <div class="tag-ordem-matriz">
+                                    <span class="ponto-status" style="background:#287783;box-shadow:0 0 8px #287783;"></span>
+                                    <span>Matriz W ∈ ℝ<sup>4×4</sup> (Pesos)</span>
+                                </div>
+                                <span class="tipo-grafo-tag" style="background:var(--cor-alerta-clara);color:var(--cor-alerta);">Ponderada (m)</span>
+                            </div>
+                            <table class="tabela-matriz-moderna">
+                                <thead>
+                                    <tr>
+                                        <th class="th-origem-destino" title="Origem \ Destino">Origem \ Dest</th>
+                                        <th><span class="chip-vertice">P1</span></th>
+                                        <th><span class="chip-vertice">P2</span></th>
+                                        <th><span class="chip-vertice">P3</span></th>
+                                        <th><span class="chip-vertice">P4</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P1</span></th>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                        <td><span class="val-matriz val-custo-amarelo">55 m</span></td>
+                                        <td><span class="val-matriz val-inf">∞</span></td>
+                                        <td><span class="val-matriz val-inf">∞</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P2</span></th>
+                                        <td><span class="val-matriz val-custo-amarelo">55 m</span></td>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                        <td><span class="val-matriz val-inf">∞</span></td>
+                                        <td><span class="val-matriz val-custo-verde">15 m</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P3</span></th>
+                                        <td><span class="val-matriz val-inf">∞</span></td>
+                                        <td><span class="val-matriz val-inf">∞</span></td>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                        <td><span class="val-matriz val-custo-azul">101 m</span></td>
+                                    </tr>
+                                    <tr>
+                                        <th class="th-vert"><span class="chip-vertice">P4</span></th>
+                                        <td><span class="val-matriz val-inf">∞</span></td>
+                                        <td><span class="val-matriz val-custo-verde">15 m</span></td>
+                                        <td><span class="val-matriz val-custo-azul">101 m</span></td>
+                                        <td><span class="val-matriz val-diag">0</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div class="rodape-tabela-matriz">
+                                <div class="legenda-vertices">
+                                    <span><span class="tag-vertice">P1</span> Início Amarelo</span>
+                                    <span><span class="tag-vertice">P2</span> Pórtico Entrada</span>
+                                    <span><span class="tag-vertice">P3</span> Início Azul</span>
+                                    <span><span class="tag-vertice">P4</span> Rampa Lateral</span>
+                                </div>
+                            </div>
+                            <div class="explicacao-tabela-matriz">
+                                <h4>Como interpretar a Matriz de Custos Ponderada:</h4>
+                                <ul>
+                                    <li><strong>Pesos Métricos (W<sub>ij</sub>):</strong> Cada célula numérica expressa a distância física real em metros medida via satélite e GPS no levantamento de campo.</li>
+                                    <li><strong>55 m (Trajeto Amarelo - P1 ↔ P2):</strong> Menor percurso linear até o campus, porém intransitável de forma autônoma para cadeirantes devido aos degraus e aclive íngreme.</li>
+                                    <li><strong>101 m (Trajeto Azul - P3 ↔ P4):</strong> Rota alternativa de contorno público que conduz pedestres com mobilidade reduzida até o portão da garagem/rampa.</li>
+                                    <li><strong>15 m (Rampa Lateral - P4 ↔ P2):</strong> Acesso inclinado suave e nivelado que conecta a garagem ao hall principal do campus.</li>
+                                    <li><strong>Símbolo ∞ (Infinito):</strong> Indica pares de vértices sem aresta pedonal direta. Em algoritmos de grafos (Dijkstra), o custo infinito impede que o roteador compute saltos inexistentes.</li>
+                                    <li><strong>Caminho Ótimo Acessível:</strong> Enquanto a rota direta soma 55 m com barreiras, o algoritmo computacional seleciona a rota acessível P3 → P4 → P2 com 116 m totais (101 m + 15 m) garantindo acessibilidade plena.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </details>
+                </article>
+            </div>
+        </section>
+
+        <!-- BLOCO 5: REGISTRO FOTOGRÁFICO DE CAMPO (AS IMAGENS DO NOSSO GRUPO) -->
+        <section id="galeria-campo" class="bloco-secao">
+            <div class="cabecalho-bloco">
+                <div class="titulo-secao">
+                    <h2>O que encontramos pelo caminho.</h2>
+                </div>
+            </div>
+
+            <p class="descricao-bloco">
+                Fotografias originais registradas durante o trabalho de campo no campus da Estácio Niterói.
+                Clique em qualquer imagem para inspecioná-la em tamanho ampliado com a respectiva análise técnica.
+            </p>
+
+            <!-- Categoria 1: Entorno Urbano e Calçadas -->
+            <div class="categoria-galeria">
+                <h3>Declividade acentuada do entorno e vias de acesso</h3>
+                <p>Topografia muito íngreme das vias públicas de aproximação, desníveis severos e barreiras nas calçadas externas.</p>
+
+                <div class="grade-fotos-grupo">
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Rua de acesso com forte declividade no entorno da Estácio" aria-haspopup="dialog">
+                            <img width="1600" height="1200" src="img/rua_acesso_entorno.jpg" alt="Rua de acesso com forte declividade no entorno da Estácio" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Declividade Crítica da Via Externa</strong>
+                            <p>Ladeira com inclinação muito íngreme na via pública, exigindo esforço físico extremo e gerando risco real de perda de tração ou tombamento para cadeirantes.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Topografia íngreme e obstáculos na calçada" aria-haspopup="dialog">
+                            <img width="1600" height="1200" src="img/rua_obstaculos_calcada.jpg" alt="Topografia íngreme e obstáculos na calçada" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Rua Muito Íngreme e Calçadas Irregulares</strong>
+                            <p>Forte aclive longitudinal somado a calçadas com postes e imperfeições de piso, inviabilizando o deslocamento seguro e independente de pedestres com mobilidade reduzida.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Guarita e transição de nível do acesso lateral" aria-haspopup="dialog">
+                            <img width="1600" height="1200" src="img/guarita_estacionamento.jpg" alt="Guarita e transição de nível do acesso lateral" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Transição de Nível / Entrada da Garagem</strong>
+                            <p>Acesso lateral com desnível entre a cota íngreme da rua e o piso do campus, servindo de transição para o Trajeto Azul.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Categoria 2: Entradas e Escadarias -->
+            <div class="categoria-galeria">
+                <h3>Entrada frontal e escadarias</h3>
+                <p>Análise da barreira arquitetônica do acesso principal com degraus contínuos.</p>
+
+                <div class="grade-fotos-grupo">
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Escadaria frontal com degraus" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/escadaria_externa_obstaculo.jpg" alt="Escadaria frontal com degraus" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Acesso Frontal e Escadaria</strong>
+                            <p>54,96 metros de extensão total da rota pelo pátio de pedestres.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Patamar intermediário da escadaria" aria-haspopup="dialog">
+                            <img width="1200" height="1600" src="img/escadaria_patamar.jpg" alt="Patamar intermediário da escadaria" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Patamar da Escadaria</strong>
+                            <p>Nivelamento intermediário com corrimão bilateral NBR 9050.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Placa de rota acessível" aria-haspopup="dialog">
+                            <img width="1600" height="1200" src="img/entrada_acessivel_placa.jpg" alt="Placa de rota acessível" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Sinalização de Rota Acessível</strong>
+                            <p>Placa indicativa orientando o uso do portão lateral para PCD.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Categoria 3: Rampas e Transposição de Nível -->
+            <div class="categoria-galeria">
+                <h3>Rampas e conexão com a garagem</h3>
+                <p>Percurso suave em zigue-zague com patamares de descanso a cada lance.</p>
+
+                <div class="grade-fotos-grupo">
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Rampa de veículos e pedestres" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/bifurcacao_rampa_veiculos.jpg" alt="Rampa de veículos e pedestres" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Bifurcação Rampa / Garagem</strong>
+                            <p>Via compartilhada entre veículos e acesso de cadeirantes.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Rampa em zigue-zague" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/rampa_ziguezague.jpg" alt="Rampa em zigue-zague" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Rampa em Zigue-Zague</strong>
+                            <p>Transposição de desnível com patamar e piso antiderrapante.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Rampa de ligação com o pátio" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/rampa_acessivel_patio.jpg" alt="Rampa de ligação com o pátio" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Chegada ao Pátio Central</strong>
+                            <p>Conexão nivelada com a área de convivência e recepção.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Categoria 4: Circulação Térrea e Pátio -->
+            <div class="categoria-galeria">
+                <h3>Pátio, circulação térrea e piso tátil</h3>
+                <p>Distribuição interna e facilidade de movimentação após o ingresso no campus.</p>
+
+                <div class="grade-fotos-grupo">
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Pátio central coberto" aria-haspopup="dialog">
+                            <img width="1200" height="1600" src="img/patio_central_marquise.jpg" alt="Pátio central coberto" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Pátio Central & Marquise</strong>
+                            <p>Piso plano, nivelado e protegido contra intempéries.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Rota acessível no pátio" aria-haspopup="dialog">
+                            <img width="1200" height="1600" src="img/patio_rota_acessivel.jpg" alt="Rota acessível no pátio" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Circulação Livre</strong>
+                            <p>Corredores amplos com largura superior a 1,50 metro.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Faixa de piso podotátil" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/corredor_rota_podotatil.jpg" alt="Faixa de piso podotátil" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Piso Podotátil Direcional</strong>
+                            <p>Linha guia emborrachada para auxílio a pessoas cegas.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Categoria 5: Mapa tátil e elevador -->
+            <div class="categoria-galeria">
+                <h3>Mapa tátil e elevador</h3>
+                <p>Totem com mapa tátil oficial e elevador adaptado com sinalização sonora.</p>
+
+                <div class="grade-fotos-grupo">
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Totem com Mapa Tátil oficial da Estácio" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/mapa_tatil_oficial.jpg" alt="Totem com Mapa Tátil oficial da Estácio" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Totem do Mapa Tátil Oficial</strong>
+                            <p>Planta baixa em alto-relevo tridimensional com Braille.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Detalhe do mapa em braille" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/mapa_tatil_detalhe.jpg" alt="Detalhe do mapa em braille" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Detalhe em Braille & Relevo</strong>
+                            <p>Identificação de salas, blocos e rotas de fuga acessíveis.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Elevador adaptado no piso térreo" aria-haspopup="dialog">
+                            <img width="1600" height="1200" src="img/elevador_terreo_tatil.jpg" alt="Elevador adaptado no piso térreo" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Elevador Acessível (Térreo)</strong>
+                            <p>Piso tátil de alerta na soleira e botoeiras em relevo.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Categoria 6: Inconformidades em Sanitários e Corredores -->
+            <div class="categoria-galeria">
+                <h3>Sanitários, soleiras e pontos críticos para cadeirantes</h3>
+                <p>Evidências fotográficas de desníveis, soleiras elevadas e vãos que comprometem o trânsito independente de cadeirantes e idosos.</p>
+
+                <div class="grade-fotos-grupo">
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Sanitário com desnível de piso na soleira" aria-haspopup="dialog">
+                            <img width="1200" height="1600" src="img/banheiro_desnivel_porta.jpg" alt="Sanitário com desnível de piso na soleira" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Ressalto na Soleira do Sanitário PCD</strong>
+                            <p>Desnível abrupto de piso que impede o avanço autônomo da cadeira de rodas e gera risco de tropeço para idosos.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Grelha metálica na passagem de circulação" aria-haspopup="dialog">
+                            <img width="1600" height="1200" src="img/desnivel_passagem_grelha.jpg" alt="Grelha metálica na passagem de circulação" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Grelha Pluvial com Vãos Perigosos</strong>
+                            <p>Frestas no piso que travam as rodas dianteiras de cadeiras de rodas e retêm ponteiras de bengalas ortopédicas.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Corredor de acesso aos laboratórios" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/acesso_terreob_laboratorios.jpg" alt="Corredor de acesso aos laboratórios" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Corredor Interno dos Laboratórios</strong>
+                            <p>Circulação ampla, porém desprovida de rota podotátil de alerta nas portas de acesso aos laboratórios e salas.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+            <!-- Categoria 7: Riscos Físicos e Orientação para Cegos e Idosos -->
+            <div class="categoria-galeria">
+                <h3>Riscos físicos e descontinuidade tátil para cegos</h3>
+                <p>Obstáculos suspensos sem alerta podotátil no piso e interrupções nas rotas acessíveis de circulação.</p>
+
+                <div class="grade-fotos-grupo">
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Extintores de incêndio suspensos em corredor de pedestres" aria-haspopup="dialog">
+                            <img width="1200" height="1600" src="img/obstaculo_extintores_corredor.jpg" alt="Extintores de incêndio suspensos em corredor de pedestres" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Obstáculo Aéreo em Corredor de Fluxo</strong>
+                            <p>Extintor afixado a 1,60 m sem piso tátil de alerta, apresentando risco severo de impacto na cabeça e tronco de pessoas cegas.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Interrupção de rota podotátil no corredor" aria-haspopup="dialog">
+                            <img width="1600" height="1204" src="img/corredor_rota_podotatil.jpg" alt="Interrupção de rota podotátil no corredor" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Descontinuidade da Linha Guia Tátil</strong>
+                            <p>Piso tátil direcional é interrompido antes das áreas de serviço, desorientando a navegação sensorial autônoma.</p>
+                        </div>
+                    </article>
+
+                    <article class="card-foto-evidencia">
+                        <button type="button" class="moldura-foto abrir-foto" aria-label="Ampliar foto: Conexão entre o pátio e o bloco principal" aria-haspopup="dialog">
+                            <img width="1200" height="1600" src="img/patio_rota_acessivel.jpg" alt="Conexão entre o pátio e o bloco principal" loading="lazy">
+                        </button>
+                        <div class="legenda-foto-evidencia">
+                            <strong>Transição Pátio / Prédio Principal</strong>
+                            <p>Ponto de convergência de fluxos que carece de contraste cromático nas soleiras para auxílio a pessoas com baixa visão.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- BLOCO 6: BARREIRAS E PROPOSTAS DE ENGENHARIA -->
+        <section id="barreiras-solucoes" class="bloco-secao">
+            <div class="cabecalho-bloco">
+                <div class="titulo-secao">
+                    <h2>Barreiras observadas. Melhorias possíveis.</h2>
+                </div>
+            </div>
+
+            <p class="descricao-bloco">
+                Recomendações técnicas elaboradas a partir do levantamento de campo para subsidiar
+                futuras intervenções arquitetônicas e de sinalização inclusiva no campus.
+            </p>
+
+            <div class="grade-barreiras-solucoes">
+                <!-- Barreira 1: Desnível e Percurso -->
+                <article class="card-intervencao card-intervencao-barreira">
+                    <span class="tipo-intervencao">Barreira para Cadeirantes & Idosos</span>
+                    <h3>Desníveis na entrada e contorno excessivo</h3>
+                    <p>
+                        O acesso direto pelo Trajeto Amarelo (54,96 m) possui degraus e desníveis que impedem a entrada de cadeirantes e sobrecarregam idosos,
+                        enquanto a rota alternativa pelo Trajeto Azul obriga a percorrer 100,56 metros por ruas muito íngremes e rampa de serviço.
+                    </p>
+                </article>
+
+                <!-- Solução 1 -->
+                <article class="card-intervencao card-intervencao-solucao">
+                    <span class="tipo-intervencao">Proposta de melhoria</span>
+                    <h3>Plataforma elevatória e rampa direta</h3>
+                    <p>
+                        Instalação de plataforma vertical acessível ou rampa suave no hall frontal,
+                        eliminando a necessidade de contorno de 100 metros e garantindo acesso autônomo na entrada principal.
+                    </p>
+                </article>
+
+                <!-- Barreira 2: Sanitários -->
+                <article class="card-intervencao card-intervencao-barreira">
+                    <span class="tipo-intervencao">Barreira Crítica para Cadeirantes</span>
+                    <h3>Sanitários sem acessibilidade plena</h3>
+                    <p>
+                        Presença de ressalto/degrau na soleira da porta dos banheiros que bloqueia as rodas da cadeira,
+                        espaço interno insuficiente para manobra de rotação de 180°/360° (NBR 9050) e barras de apoio ausentes ou mal posicionadas para transferência.
+                    </p>
+                </article>
+
+                <!-- Solução 2 -->
+                <article class="card-intervencao card-intervencao-solucao">
+                    <span class="tipo-intervencao">Proposta de melhoria</span>
+                    <h3>Adequação completa dos sanitários PCD</h3>
+                    <p>
+                        Nivelamento total da soleira da porta com rampa em cunha de transição, portas de 90 cm com puxador horizontal,
+                        área livre de giro com diâmetro de 1,50 m e barras de apoio bilaterais em conformidade estrita com a NBR 9050.
+                    </p>
+                </article>
+
+                <!-- Barreira 3: Cegos e Baixa Visão -->
+                <article class="card-intervencao card-intervencao-barreira">
+                    <span class="tipo-intervencao">Barreira para Pessoas Cegas</span>
+                    <h3>Obstáculos aéreos e descontinuidade tátil</h3>
+                    <p>
+                        Extintores e caixas suspensas nas paredes dos corredores abaixo de 2,10 m de altura sem piso tátil de alerta,
+                        gerando risco de colisão contra a cabeça ou tronco de pessoas cegas, além de interrupções na rota podotátil direcional.
+                    </p>
+                </article>
+
+                <!-- Solução 3 -->
+                <article class="card-intervencao card-intervencao-solucao">
+                    <span class="tipo-intervencao">Proposta de melhoria</span>
+                    <h3>Sinalização tátil de alerta e rota contínua</h3>
+                    <p>
+                        Demarcação de piso tátil de alerta na projeção de todos os obstáculos suspensos, interligação contínua da linha guia podotátil
+                        da calçada até o mapa tátil, catraca, elevador e salas, e placas em Braille com alto contraste nos batentes.
+                    </p>
+                </article>
+
+                <!-- Barreira 4: Idosos e Calçadas Íngremes -->
+                <article class="card-intervencao card-intervencao-barreira">
+                    <span class="tipo-intervencao">Barreira para Idosos e Cadeirantes</span>
+                    <h3>Ruas íngremes e grelhas com frestas largas</h3>
+                    <p>
+                        Vias de aproximação com declividade acentuada sem corrimãos de apoio ou bancos de descanso, somadas a grelhas
+                        pluviais com vãos paralelos que prendem rodas dianteiras de cadeiras de rodas e ponteiras de bengalas.
+                    </p>
+                </article>
+
+                <!-- Solução 4 -->
+                <article class="card-intervencao card-intervencao-solucao">
+                    <span class="tipo-intervencao">Proposta de melhoria</span>
+                    <h3>Corrimãos nas ladeiras e grelhas transversais</h3>
+                    <p>
+                        Instalação de corrimão contínuo duplo nas calçadas mais íngremes do entorno e substituição das grelhas de drenagem
+                        por modelos com aberturas de no máximo 12 mm dispostas perpendicularmente ao fluxo de pedestres.
+                    </p>
+                </article>
+
+                <!-- Barreira 5: Compartilhamento com Veículos -->
+                <article class="card-intervencao card-intervencao-barreira">
+                    <span class="tipo-intervencao">Risco de Atropelamento e Conflito</span>
+                    <h3>Tráfego compartilhado de pedestres e veículos</h3>
+                    <p>
+                        O acesso pela garagem (Trajeto Azul) não possui segregação física entre automóveis e pedestres,
+                        colocando cadeirantes, idosos com passos lentos e pessoas cegas em risco iminente de atropelamento nas curvas cegas.
+                    </p>
+                </article>
+
+                <!-- Solução 5 -->
+                <article class="card-intervencao card-intervencao-solucao">
+                    <span class="tipo-intervencao">Proposta de melhoria</span>
+                    <h3>Calçada segregada e balizadores físicos</h3>
+                    <p>
+                        Instalação de mureta de proteção ou balizadores metálicos reservando uma faixa exclusiva para pedestres de no mínimo 1,20 m,
+                        com piso podotátil contínuo e sinalização luminosa de advertência aos motoristas.
+                    </p>
+                </article>
+
+                <!-- Barreira 6: Contraste Visual e Braille -->
+                <article class="card-intervencao card-intervencao-barreira">
+                    <span class="tipo-intervencao">Barreira para Baixa Visão e Cegos</span>
+                    <h3>Falta de contraste em degraus e ausência de Braille</h3>
+                    <p>
+                        Bordas de degraus em patamares sem faixa de contraste cromático visual, dificultando a percepção de desnível por idosos
+                        e pessoas com baixa visão, além de portas de salas de aula e laboratórios sem placas táteis em Braille nos batentes.
+                    </p>
+                </article>
+
+                <!-- Solução 6 -->
+                <article class="card-intervencao card-intervencao-solucao">
+                    <span class="tipo-intervencao">Proposta de melhoria</span>
+                    <h3>Faixas de alto contraste e sinalização tátil nas portas</h3>
+                    <p>
+                        Aplicação de faixas fotoluminescentes e antiderrapantes de 3 cm no bordo de todos os degraus e instalação
+                        de placas de identificação com texto em alto-relevo e Braille a 1,20 m de altura em todos os batentes.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+        <!-- BLOCO 7: FUNDAMENTAÇÃO MATEMÁTICA -->
+        <section id="fundamentacao" class="bloco-secao">
+            <div class="cabecalho-bloco">
+                <div class="titulo-secao">
+                    <h2>A geometria por trás do estudo.</h2>
+                </div>
+            </div>
+
+            <p class="descricao-bloco">
+                Modelagem matemática aplicada na resolução computacional de trajetos e representações espaciais.
+            </p>
+
+            <div class="grade-barreiras-solucoes">
+                <article class="card-intervencao">
+                    <h3>Cálculo Geodésico Curvilíneo (Haversine)</h3>
+                    <p>
+                        A extensão real dos percursos curvilíneos é calculada pelo somatório das distâncias geodésicas entre os vértices sequenciais da polilinha:
+                        <span class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Somatório da distância Haversine"><mrow><msub><mi>d</mi><mtext>total</mtext></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>k</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>n</mi><mo>-</mo><mn>1</mn></mrow></munderover><mn>2</mn><mi>R</mi><mo>·</mo><mi>arcsin</mi><mrow><mo>(</mo><msqrt><mrow><msup><mi>sin</mi><mn>2</mn></msup><mo>(</mo><mfrac><mrow><mi>Δ</mi><msub><mi>φ</mi><mi>k</mi></msub></mrow><mn>2</mn></mfrac><mo>)</mo><mo>+</mo><mi>cos</mi><mo>(</mo><msub><mi>φ</mi><mi>k</mi></msub><mo>)</mo><mi>cos</mi><mo>(</mo><msub><mi>φ</mi><mrow><mi>k</mi><mo>+</mo><mn>1</mn></mrow></msub><mo>)</mo><msup><mi>sin</mi><mn>2</mn></msup><mo>(</mo><mfrac><mrow><mi>Δ</mi><msub><mi>λ</mi><mi>k</mi></msub></mrow><mn>2</mn></mfrac><mo>)</mo></mrow></msqrt><mo>)</mo></mrow></mrow></math></span>
+                        resultando em 54,96 m no Trajeto Amarelo e 100,56 m no Trajeto Azul.
+                    </p>
+                </article>
+
+                <article class="card-intervencao">
+                    <h3>Coordenadas no plano local</h3>
+                    <p>
+                        As coordenadas geodésicas de latitude (φ) e longitude (λ) são mapeadas no plano euclidiano local medido em metros:
+                        <span class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Projeção local de latitude e longitude em metros."><mrow><mi>Δx</mi><mo>=</mo><mi>R</mi><mo>·</mo><mi>cos</mi><mo>(</mo><msub><mi>φ</mi><mtext>médio</mtext></msub><mo>)</mo><mo>·</mo><mi>Δλ</mi></mrow><mspace width="1em"/><mrow><mi>Δy</mi><mo>=</mo><mi>R</mi><mo>·</mo><mi>Δφ</mi></mrow></math></span>
+                        onde <var>R</var> = 6.371.000 m é o raio médio terrestre.
+                    </p>
+                </article>
+
+                <article class="card-intervencao">
+                    <h3>Componentes e módulo do vetor</h3>
+                    <p>
+                        O deslocamento linear entre dois pontos <var>A</var> e <var>B</var> é definido pelo vetor:
+                        <span class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Vetor v, suas componentes delta x e delta y e seu módulo euclidiano."><mrow><mover><mi>v</mi><mo>→</mo></mover><mo>=</mo><mi>Δx</mi><mover><mi>i</mi><mo>^</mo></mover><mo>+</mo><mi>Δy</mi><mover><mi>j</mi><mo>^</mo></mover></mrow><mspace width="1em"/><mrow><mo>‖</mo><mi>v</mi><mo>‖</mo><mo>=</mo><msqrt><msup><mi>Δx</mi><mn>2</mn></msup><mo>+</mo><msup><mi>Δy</mi><mn>2</mn></msup></msqrt></mrow></math></span>
+                        expressando a distância geométrica direta entre marcos do campus.
+                    </p>
+                </article>
+
+                <article class="card-intervencao">
+                    <h3>Equação da reta e direção</h3>
+                    <p>
+                        O alinhamento do percurso é modelado na forma linear:
+                        <span class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Equação da reta, coeficiente angular e direção do deslocamento."><mrow><mi>y</mi><mo>=</mo><mi>m</mi><mi>x</mi><mo>+</mo><mi>b</mi></mrow><mspace width="1em"/><mrow><mi>m</mi><mo>=</mo><mfrac><mi>Δy</mi><mi>Δx</mi></mfrac></mrow><mspace width="1em"/><mrow><mi>θ</mi><mo>=</mo><mi>atan2</mi><mo>(</mo><mi>Δy</mi><mo>,</mo><mi>Δx</mi><mo>)</mo></mrow></math></span>
+                        determinando a direção angular em graus em relação ao eixo horizontal.
+                    </p>
+                </article>
+
+                <article class="card-intervencao">
+                    <h3>Inclinação das rampas</h3>
+                    <p>
+                        A inclinação percentual (<var>i</var>) é expressa pela razão entre o desnível vertical (<var>h</var>) e o comprimento horizontal (<var>c</var>):
+                        <span class="formula"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block" aria-label="Inclinação i igual a h sobre c vezes cem por cento, menor ou igual a oito vírgula trinta e três por cento."><mrow><mi>i</mi><mo>=</mo><mfrac><mi>h</mi><mi>c</mi></mfrac><mo>×</mo><mn>100</mn><mo>%</mo><mo>≤</mo><mn>8,33</mn><mo>%</mo><mspace width="1em"/><mtext>(1:12)</mtext></mrow></math></span>
+                        limite máximo exigido para tráfego seguro de cadeira de rodas sem tombamento.
+                    </p>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- MODAL / LIGHTBOX PARA VISUALIZAÇÃO AMPLIADA DAS FOTOS -->
+    <div id="modalFoto" class="modal-foto" role="dialog" aria-modal="true" aria-labelledby="modalFotoLegenda" hidden>
+        <div class="modal-conteudo">
+            <button type="button" id="modalFechar" class="modal-fechar" aria-label="Fechar foto">✕</button>
+            <img id="modalFotoImg" width="1200" height="1600" alt="Fotografia ampliada">
+            <div id="modalFotoLegenda" class="modal-legenda"></div>
+        </div>
+    </div>
+
+    <!-- RODAPÉ DA PLATAFORMA -->
+    <footer class="rodape-plataforma">
+        <div class="conteudo-rodape">
+            <div class="rodape-info">
+                <strong>Geo-acessível / Estácio Niterói</strong>
+                <p>
+                    Projeto Integrador de Geometria Analítica e Álgebra Linear — Curso de Ciência da Computação.
+                    Desenvolvido para mapear rotas acessíveis, documentar barreiras físicas e promover a inclusão de toda a comunidade acadêmica.
+                </p>
+            </div>
+
+            <a href="#inicio" class="btn-voltar-topo">
+                Voltar ao início
+            </a>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+        crossorigin=""
+    ></script>
+    <script src="script.js?v=9a973f1dbc1f"></script>
+
+</body>
+</html>
