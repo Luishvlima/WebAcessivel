@@ -1,4 +1,26 @@
-/* Geo-acessível: campus wayfinding, field photography and readable research. */
+/* WebAcessibilidade: campus wayfinding, field photography and readable research - Gotham Edition */
+@font-face {
+    font-family: 'Gotham';
+    src: local('Gotham'), local('Gotham-Book'), local('Gotham Book');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Gotham';
+    src: local('Gotham-Medium'), local('Gotham Medium');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'Gotham';
+    src: local('Gotham-Bold'), local('Gotham Bold');
+    font-weight: 700;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     color-scheme: light;
     --cor-primaria: #254f6b;
@@ -36,8 +58,8 @@
     --texto-celula-vazia: #72838d;
     --sublinhado: #9daeb9;
     --fundo-selecao: #d9e9ed;
-    --fonte-texto: "Source Sans 3", "Segoe UI", sans-serif;
-    --fonte-titulo: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --fonte-texto: "Gotham", "Montserrat", "Segoe UI", -apple-system, sans-serif;
+    --fonte-titulo: "Gotham", "Montserrat", "Segoe UI", sans-serif;
 }
 :root[data-theme="dark"] {
     color-scheme: dark;
@@ -103,7 +125,7 @@ svg { display: block; flex-shrink: 0; }
 .conteudo-hero { display: grid; grid-template-columns: .85fr 1.15fr; gap: clamp(28px, 5vw, 76px); align-items: center; padding-block: 50px 38px; }
 .hero-texto, .hero-registro { min-width: 0; }
 .hero-local { font-size: 15px; color: var(--texto-mutado); margin-bottom: 20px; }
-.hero-texto h1 { font-family: var(--fonte-titulo); font-weight: 600; font-size: clamp(58px, 6.9vw, 94px); letter-spacing: -1.3px; line-height: .99; margin-bottom: 26px; }
+.hero-texto h1 { font-family: var(--fonte-titulo); font-weight: 700; font-size: clamp(48px, 5.8vw, 82px); letter-spacing: -0.5px; line-height: 1.05; margin-bottom: 26px; }
 .hero-texto > p:last-of-type { max-width: 39ch; font-size: 18px; line-height: 1.6; }
 .hero-acoes { display: flex; align-items: center; flex-wrap: wrap; gap: 18px 24px; margin-top: 30px; }
 .btn-acao-primario, .btn-calcular { display: inline-flex; align-items: center; justify-content: center; gap: 22px; min-height: 48px; padding: 12px 19px; border: 1px solid var(--fundo-botao-primario); border-radius: var(--raio-sm); background: var(--fundo-botao-primario); color: var(--texto-botao-primario); font-size: 15px; font-weight: 600; transition: background-color .15s; }
@@ -834,8 +856,8 @@ body.foto-aberta { overflow: hidden; }
     --texto-celula-vazia: #72838d;
     --sublinhado: #9daeb9;
     --fundo-selecao: #d9e9ed;
-    --fonte-texto: "Source Sans 3", "Segoe UI", sans-serif;
-    --fonte-titulo: "Barlow Condensed", "Arial Narrow", sans-serif;
+    --fonte-texto: "Gotham", "Montserrat", "Segoe UI", -apple-system, sans-serif;
+    --fonte-titulo: "Gotham", "Montserrat", "Segoe UI", sans-serif;
     }
     #mapa .leaflet-tile-pane { filter: none; }
     .alternar-tema { display: none !important; }

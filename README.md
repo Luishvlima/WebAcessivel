@@ -1,4 +1,4 @@
-# GEO-ACESSÍVEL | Mapeamento Digital de Acessibilidade & Modelagem Matemática
+# WebAcessibilidade | Mapeamento Digital de Acessibilidade & Modelagem Matemática
 
 > **Curso:** Ciência da Computação  
 > **Disciplina:** Geometria Analítica e Álgebra Linear  
@@ -25,7 +25,7 @@
 
 ## 1. Visão Geral do Projeto
 
-O **GEO-ACESSÍVEL** é uma aplicação web interativa concebida para mapear, analisar e solucionar os desafios de mobilidade urbana e acessibilidade arquitetônica no entorno e nas entradas do **Campus Estácio Niterói I**.
+O **WebAcessibilidade** é uma aplicação web interativa concebida para mapear, analisar e solucionar os desafios de mobilidade urbana e acessibilidade arquitetônica no entorno e nas entradas do **Campus Estácio Niterói I**.
 
 A plataforma integra conceitos fundamentais de **Ciência da Computação**, **Geometria Analítica** e **Álgebra Linear**:
 * **Levantamento em Campo:** Identificação de barreiras arquitetônicas severas (declividade excessiva, degraus, soleiras em sanitários e grelhas pluviais inadequadas).
@@ -40,7 +40,7 @@ A plataforma integra conceitos fundamentais de **Ciência da Computação**, **G
 ### Momento 1: Abertura e Contextualização (2 minutos)
 * **Tela:** Cabeçalho inicial do site com os contadores de métricas.
 * **Falas sugeridas:**
-  > *"Olá a todos e ao professor(a). O nosso projeto se chama **GEO-ACESSÍVEL**. Desenvolvemos uma plataforma web interativa que une Geometria Analítica, Álgebra Linear e Ciência da Computação para diagnosticar e propor soluções para a acessibilidade do Campus Estácio Niterói I.*  
+  > *"Olá a todos e ao professor(a). O nosso projeto se chama **WebAcessibilidade**. Desenvolvemos uma plataforma web interativa que une Geometria Analítica, Álgebra Linear e Ciência da Computação para diagnosticar e propor soluções para a acessibilidade do Campus Estácio Niterói I.*  
   > *A acessibilidade urbana não é apenas uma diretriz da NBR 9050; ela define o direito de ir e vir de estudantes e funcionários com deficiência motora, idosos e pessoas com deficiência visual. Nosso foco foi mapear os percursos de acesso ao campus, registrar as barreiras existentes e modelar matematicamente as rotas através de vetores e matrizes ponderadas."*
 
 ### Momento 2: Demonstração das Rotas no Mapa Interativo (3 minutos)

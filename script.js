@@ -1,5 +1,5 @@
 // ============================================================
-// GEO-ACESSÍVEL | ESTÁCIO NITERÓI
+// WebAcessibilidade | ESTÁCIO NITERÓI
 // Projeto: Geometria Analítica & Álgebra Linear na Mobilidade
 // Ciência da Computação
 // ============================================================
